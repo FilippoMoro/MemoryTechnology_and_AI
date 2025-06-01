@@ -1,8 +1,8 @@
-import streamlit as st
 import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import streamlit as st
 from utils import fitness_score, normalize_weights, compute_fitness_scores
 from plotting import plot_fitness_table, plot_weights
 
