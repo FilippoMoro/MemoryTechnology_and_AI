@@ -62,11 +62,10 @@ def plot_fitness_table( fitness_coefs, memory_table, nn_table, plot_percent=True
   ax.tick_params(which="minor", bottom=False, left=False)
 
   plt.tight_layout()
-  plt.show()
+  # plt.show()
+  # fig.savefig( path_save + '/' + filename + '.pdf', dpi=300, transparent=True )
 
-#   fig.savefig( path_save + '/' + filename + '.pdf', dpi=300, transparent=True )
-
-  return None
+  return fig
 
 
 def plot_weights( weights, color='k', alpha = 0.25, 
@@ -88,6 +87,7 @@ def plot_weights( weights, color='k', alpha = 0.25,
     ax.spines['left'].set_visible(False)
 
     plt.tight_layout()
-    plt.show()
 
     # fig.savefig( path_save + '/' + filename + '.pdf', dpi=300, transparent=True )
+
+    return fig

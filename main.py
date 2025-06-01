@@ -6,54 +6,25 @@ import streamlit as st
 from utils import fitness_score, normalize_weights, compute_fitness_scores
 from plotting import plot_fitness_table, plot_weights
 
+# Streamlit Docs https://docs.streamlit.io/
+
 st.title("Matching Memory Technology to AI workloads")
-# st.write(
-#     "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
-# )
+
 st.write(
-    '''Description:
+    '''
+    This app supports a poster presented by F. Moro, S. Liu, S. Billaudelle, A. Liu and M. Payvand at the ISMC conference. Find details about the conference here: https://newevent.bg/en/
+
+    The title of the poster is "What AI demands from Memory Technology" and the work proposes to analyze Memory Technology and Neural Networks in different applications to find the best fit between all the combinations. 
+
+    First, we analyze the landscape of Memory Technology by evaluating different memory types on a set of metrics. These metrics include Density, Leakage Power, Write and Read latency, Write and Read energy and Endurance.
+
+    Second, we consider a wide range of AI applications domain, and - in particular - the Neural Networks employed in these domains. These NNs are also evalueted on a set of metrics that concern Memory utilization during inference. Among such metrics are Parameter Size, Ratio between Static and Dynamic (activations) memory, number of Multipy-and-Accumulate (MAC) operations per inference, inference rate per second.
+
+    #### --> **Fitness Score**
+    These two sets of metrics are combined in the Fitness Score, which quantifies the match between the Memory characteristics and the NN's requirements.
+    
     ------------
-    The **Fitness Score** computes a weighted fitness score quantifying the suitability of a memory device for a given neural network workload. The score reflects how well the memory device matches the model's performance and energy requirements, considering multiple hardware and workload-specific metrics.
-
-    Parameters:
-    -----------
-    - memory_data (list):
-    A list containing memory-related characteristics:
-    [memory_type, density, leakage, latency_write, latency_read, energy_read,
-    bits_per_read, endurance, memory_is_nonvolatile, cmos_node, cim_compatible, ...]
-
-    - nn_data (list):
-    A list describing the neural network's workload and memory behavior:
-    [model_type, param_size, activation_size, static_dynamic_ratio,
-    macs_per_inference, inference_rate, access_pattern, reuse_factor,
-    peak_bw, write_intensity, memory_notes]
-
-    - norm_const (list, optional):
-    Normalization constants for scaling raw values before scoring:
-    [area_norm, latency_norm, energy_norm, cmos_norm] = [5, 1/60, 1, 22]
-
-    - weights (list, optional):
-    Weights (must sum to 1) to balance the 8 sub-scores:
-        w1: footprint
-        w2: write intensity
-        w3: read intensity
-        w4: latency
-        w5: volatility
-        w6: static power
-        w7: cim
-        w8: cmos node
-        w9: cost score
-
-    - verbose (bool, optional):
-    If True, prints the 8 sub-scores.
-
-    Returns:
-    --------
-    - total_score (float): The final weighted fitness score.
-    - wscores (np.ndarray): The individual weighted scores for the 8 components.
-
-    Scoring Components:
-    -------------------
+    The Fitness score is composed of 9 sub-scores:
     1. **Footprint Area Memory Score**: Smaller memory footprint (bytes/mm²) → higher score
     2. **Write Intensity**
     3. **Read Intensity**
@@ -64,22 +35,44 @@ st.write(
     8. **CMOS Score**: Penalizes larger CMOS node sizes
     9. **Cost Score**: Proportional to the cost of the memory per GB
 
-    Example:
-    --------
-    score, breakdown = fitness_score(memory_data, nn_data)
+    These sub-scores are weighted by the following 9 weights:
+    Weights (which are automatically normalized to sum to 1) balance the relevance of 9 sub-scores in a given AI application domain:
+    1. w1: footprint
+    2. w2: write intensity
+    3. w3: read intensity
+    4. w4: latency
+    5. w5: volatility
+    6. w6: static power
+    7. w7: cim
+    8. w8: cmos node
+    9. w9: cost score
+
+    --> the Fitness Score is normalized in [0-100], where 100 represent a *perfect fit* between Memory Technology and Neural Network architecture and application requirements.
+
+    We evaluate the Fitness score for common Neural Network archiectures in two macro-domains in AI: Edge and Cloud-based applications.
+    The Edge AI domain is futher subdivided into Vision, Speech and Biomedical application domains.
+    The Cloud AI domain is split into LLMs and WebApp domains.
+
+    *Which is the best Memory Technology for all of those application domain?*
+    > Let's find out!
     '''
 )
 
+# --------------------------------
 #.1 Import the memory table
 path_spreadsheet = 'https://docs.google.com/spreadsheets/d/{}/export?format=csv&id={}&gid={}'
 memory_id = '18oZaJpiCprey9iLsKH61v3uwfOBHGfqtkrmbZhll80E'
 memory_gid = '109329253'
 memory_path = path_spreadsheet.format(memory_id, memory_id, memory_gid)
 
+st.header('Memory Technology')
+st.divider()
+st.write('Here we load data for the main Memory Technology. You can take a look at the table pressing the button below.')
 memory_table = pd.read_csv(memory_path)
-memory_table.head(5)
+if st.button("Show Memory Table"):
+    st.dataframe( memory_table )
 
-
+# --------------------------------
 #.2 Import the NN data
 vision_id, vision_gid = '1yS2G0FW1GcVzydrEhpHzcmPqy9Q-Hxl-v9gCDDBO6Es', '1375486251'
 nn_vision_table = pd.read_csv(path_spreadsheet.format(vision_id, vision_id, vision_gid))
@@ -90,34 +83,33 @@ nn_speech_table = pd.read_csv(path_spreadsheet.format(speech_id, speech_id, spee
 biomed_id, biomed_gid = '1LwTbJ-AA6E11IyJXbP0RI176upNIMd__TgvQrkJSWrM', '1378057546'
 nn_biomed_table = pd.read_csv(path_spreadsheet.format(speech_id, biomed_id, biomed_gid))
 
+llm_id, llm_gid = '1zL808Rsxim7G1-Lb4lmBseFW8MHrImuEporNb18Ge10', '350385473'
+nn_llm_table = pd.read_csv(path_spreadsheet.format(llm_id, llm_id, llm_gid))
+
+web_id, web_gid = '1QMl1bliK1w4dHQoUIXCBpM6k6AweriEqkDtMqkfEky0', '935249215'
+nn_web_table = pd.read_csv(path_spreadsheet.format(web_id, web_id, web_gid))
+
 
 # --------------------------------
 # Edge AI: Vision
 st.header('Edge AI: Vision')
 st.divider()
 
+if st.button("Show Vision NNs Table"):
+    st.dataframe( nn_vision_table )
+
 st.write("Let's compute the Fitness Score for our Memory Technology types and several popular Neural Networks in the Edge AI domain. First, we have to set the *weights* for the Fitness Score:")
 
-    # w1: footprint
-    # w2: write intensity
-    # w3: read intensity
-    # w4: latency
-    # w5: volatility
-    # w6: static power
-    # w7: cim
-    # w8: cmos node
-    # w9: cost score
-
 # weight scores
-w1 = st.slider("Footprint Area", 0, 1.5, 1, 0.05)
-w2 = st.slider("Write Intensity", 0, 1.5, 0.75, 0.05)
-w3 = st.slider("Read Intensity", 0, 1.5, 1, 0.05)
-w4 = st.slider("Latency", 0, 1.5, 1, 0.05)
-w5 = st.slider("Volatility", 0, 1.5, 0.5, 0.05)
-w6 = st.slider("Static Power", 0, 1.5, 1.25, 0.05)
-w7 = st.slider("Compute-in-Memory", 0, 1.5, 0.5, 0.05)
-w8 = st.slider("CMOS compatibility", 0, 1.5, 0.5, 0.05)
-w9 = st.slider("Cost score", 0, 1.5, 0.5, 0.05)
+w1 = st.slider("Footprint Area", 0., 1.5, 1., 0.05)
+w2 = st.slider("Write Intensity", 0., 1.5, 0.75, 0.05)
+w3 = st.slider("Read Intensity", 0., 1.5, 1., 0.05)
+w4 = st.slider("Latency", 0., 1.5, 1., 0.05)
+w5 = st.slider("Volatility", 0., 1.5, 0.5, 0.05)
+w6 = st.slider("Static Power", 0., 1.5, 1.25, 0.05)
+w7 = st.slider("Compute-in-Memory", 0., 1.5, 0.5, 0.05)
+w8 = st.slider("CMOS compatibility", 0., 1.5, 0.5, 0.05)
+w9 = st.slider("Cost score", 0., 1.5, 0.5, 0.05)
 
 weights_vision = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_vision = normalize_weights( weights_vision )
@@ -139,29 +131,34 @@ norm_const_vision = [area_norm, latency_norm, read_norm,
 vision_fitness = compute_fitness_scores( memory_table, nn_vision_table, 
                                         norm_const_vision, weights_vision, verbose=False )
 
-plot_fitness_table( vision_fitness, memory_table, nn_vision_table, 
+fig_vision = plot_fitness_table( vision_fitness, memory_table, nn_vision_table, 
                     xlabel_size=12, ylabel_size=12,
                     quantile_col = 60,
                     vminmax = [20, 80],
                     filename = 'Table_Fitness_Edge_Vision' )
+st.pyplot(fig_vision)
 
 # --------------------------------
 # Edge AI: Speech
 st.header('Edge AI: Speech')
 st.divider()
 
-# weight scores
-w1 = st.slider("Footprint Area", 0, 1.5, 1, 0.05)
-w2 = st.slider("Write Intensity", 0, 1.5, 0.75, 0.05)
-w3 = st.slider("Read Intensity", 0, 1.5, 1, 0.05)
-w4 = st.slider("Latency", 0, 1.5, 1, 0.05)
-w5 = st.slider("Volatility", 0, 1.5, 0.5, 0.05)
-w6 = st.slider("Static Power", 0, 1.5, 1.5, 0.05)
-w7 = st.slider("Compute-in-Memory", 0, 1.5, 0.5, 0.05)
-w8 = st.slider("CMOS compatibility", 0, 1.5, 0.5, 0.05)
-w9 = st.slider("Cost score", 0, 1.5, 0.5, 0.05)
+if st.button("Show Speech NNs Table"):
+    st.dataframe( nn_speech_table )
 
-weights_speech = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
+# weight scores
+weights_speech = [1]*9
+weights_speech[0] = st.slider("Speech: Footprint Area", 0., 1.5, 1., 0.05)
+weights_speech[1] = st.slider("Speech: Write Intensity", 0., 1.5, 0.75, 0.05)
+weights_speech[2] = st.slider("Speech: Read Intensity", 0., 1.5, 1., 0.05)
+weights_speech[3] = st.slider("Speech: Latency", 0., 1.5, 1., 0.05)
+weights_speech[4] = st.slider("Speech: Volatility", 0., 1.5, 0.5, 0.05)
+weights_speech[5] = st.slider("Speech: Static Power", 0., 1.5, 1.5, 0.05)
+weights_speech[6] = st.slider("Speech: Compute-in-Memory", 0., 1.5, 0.5, 0.05)
+weights_speech[7] = st.slider("Speech: CMOS compatibility", 0., 1.5, 0.5, 0.05)
+weights_speech[8] = st.slider("Speech: Cost score", 0., 1.5, 0.5, 0.05)
+
+# weights_speech = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_speech = normalize_weights( weights_speech )
 # visualize weights
 # plot_weights( weights_speech, filename = 'Table_Fitness_Edge_Speech_weights', plot_values=True, color='orange' )
@@ -179,28 +176,32 @@ norm_const_speech = [area_norm, latency_norm, read_norm,
 speech_fitness = compute_fitness_scores( memory_table, nn_speech_table, 
                                         norm_const_speech, weights_speech, verbose=False )
 
-plot_fitness_table( speech_fitness, memory_table, nn_speech_table, 
+fig_speech = plot_fitness_table( speech_fitness, memory_table, nn_speech_table, 
                     xlabel_size=12, ylabel_size=12, 
                     quantile_col=65,
                     filename = 'Table_Fitness_Edge_Speech',
                     vminmax = [20, 80],
-                    no_ylabel= True)
+                    no_ylabel= False)
+st.pyplot(fig_speech)
 
 # --------------------------------
 # Edge AI: Biomedical
 st.header('Edge AI: Biomedical')
 st.divider()
 
+if st.button("Show Biomedical NNs Table"):
+    st.dataframe( nn_biomed_table )
+
 # weight scores
-w1 = st.slider("Footprint Area", 0, 1.5, 1, 0.05)
-w2 = st.slider("Write Intensity", 0, 1.5, 0.75, 0.05)
-w3 = st.slider("Read Intensity", 0, 1.5, 1, 0.05)
-w4 = st.slider("Latency", 0, 1.5, 1, 0.05)
-w5 = st.slider("Volatility", 0, 1.5, 0.5, 0.05)
-w6 = st.slider("Static Power", 0, 1.5, 1.5, 0.05)
-w7 = st.slider("Compute-in-Memory", 0, 1.5, 0.5, 0.05)
-w8 = st.slider("CMOS compatibility", 0, 1.5, 0.5, 0.05)
-w9 = st.slider("Cost score", 0, 1.5, 0.5, 0.05)
+w1 = st.slider("Biomed: Footprint Area", 0., 1.5, 1., 0.05)
+w2 = st.slider("Biomed: Write Intensity", 0., 1.5, 0.75, 0.05)
+w3 = st.slider("Biomed: Read Intensity", 0., 1.5, 1., 0.05)
+w4 = st.slider("Biomed: Latency", 0., 1.5, 1., 0.05)
+w5 = st.slider("Biomed: Volatility", 0., 1.5, 0.5, 0.05)
+w6 = st.slider("Biomed: Static Power", 0., 1.5, 1.5, 0.05)
+w7 = st.slider("Biomed: Compute-in-Memory", 0., 1.5, 0.5, 0.05)
+w8 = st.slider("Biomed: CMOS compatibility", 0., 1.5, 0.5, 0.05)
+w9 = st.slider("Biomed: Cost score", 0., 1.5, 0.5, 0.05)
 
 weights_biomed = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_biomed = normalize_weights( weights_biomed )
@@ -220,12 +221,13 @@ norm_const_biomed = [area_norm, latency_norm, read_norm,
 biomed_fitness = compute_fitness_scores( memory_table, nn_biomed_table, 
                                         norm_const_biomed, weights_biomed )
 
-plot_fitness_table( biomed_fitness, memory_table, nn_biomed_table, 
+fig_biomed = plot_fitness_table( biomed_fitness, memory_table, nn_biomed_table, 
                     xlabel_size=12, ylabel_size=12, 
                     quantile_col=65,
                     filename = 'Table_Fitness_Edge_BioMed',
                     vminmax = [20, 80],
-                    no_ylabel=True)
+                    no_ylabel=False)
+st.pyplot(fig_biomed)
 
 
 # --------------------------------
@@ -233,33 +235,21 @@ plot_fitness_table( biomed_fitness, memory_table, nn_biomed_table,
 st.header('Cloud AI: LLMs')
 st.divider()
 
-#.3 Import the NN data
-llm_id, llm_gid = '1zL808Rsxim7G1-Lb4lmBseFW8MHrImuEporNb18Ge10', '350385473'
-nn_llm_table = pd.read_csv(path_spreadsheet.format(llm_id, llm_id, llm_gid))
-
-web_id, web_gid = '1QMl1bliK1w4dHQoUIXCBpM6k6AweriEqkDtMqkfEky0', '935249215'
-nn_web_table = pd.read_csv(path_spreadsheet.format(web_id, web_id, web_gid))
-
-# just as a test
-nn_llm_table.head(5)
-
+if st.button("Show LLM NNs Table"):
+    st.dataframe( nn_llm_table )
 
 # weight scores
-w1 = st.slider("Footprint Area", 0, 5, 1, 0.05)
-w2 = st.slider("Write Intensity", 0, 5, 2, 0.05)
-w3 = st.slider("Read Intensity", 0, 5, 0.1, 0.05)
-w4 = st.slider("Latency", 0, 5, 1, 0.05)
-w5 = st.slider("Volatility", 0, 5, 0.1, 0.05)
-w6 = st.slider("Static Power", 0, 5, 0.0, 0.05)
-w7 = st.slider("Compute-in-Memory", 0, 5, 0.5, 0.05)
-w8 = st.slider("CMOS compatibility", 0, 5, 4, 0.05)
-w9 = st.slider("Cost score", 0, 5, 5, 0.05)
-
+w1 = st.slider("LLM: Footprint Area", 0., 5., 1., 0.05)
+w2 = st.slider("LLM: Write Intensity", 0., 5., 2., 0.05)
+w3 = st.slider("LLM: Read Intensity", 0., 5., 0.1, 0.05)
+w4 = st.slider("LLM: Latency", 0., 5., 1., 0.05)
+w5 = st.slider("LLM: Volatility", 0., 5., 0.1, 0.05)
+w6 = st.slider("LLM: Static Power", 0., 5., 0.0, 0.05)
+w7 = st.slider("LLM: Compute-in-Memory", 0., 5., 0.5, 0.05)
+w8 = st.slider("LLM: CMOS compatibility", 0., 5., 4., 0.05)
+w9 = st.slider("LLM: Cost score", 0., 5., 5., 0.05)
 weights_llm = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
-
 weights_llm = normalize_weights( weights_llm )
-# visualize weights
-plot_weights( weights_llm, filename = 'Table_Fitness_Could_LLM_weights', plot_values=True, color='orange' )
 
 area_norm = 1e6 # mm^2
 latency_norm = 1/100 # s (60 fps inference frequency)
@@ -273,25 +263,31 @@ norm_const_llm = [area_norm, latency_norm, energy_norm, cmos_norm, cost_norm, wr
 llm_fitness = compute_fitness_scores( memory_table, nn_llm_table, 
                                         norm_const_llm, weights_llm, verbose=False )
 
-plot_fitness_table( llm_fitness, memory_table, nn_llm_table, 
+fig_llm = plot_fitness_table( llm_fitness, memory_table, nn_llm_table, 
                     xlabel_size=12, ylabel_size=12, cmap='Purples',
                     vminmax = [20, 80],
                     quantile_col= 65,
                     filename = 'Table_Fitness_Could_LLM' )
+st.pyplot(fig_llm)
 
+# --------------------------------
 # Cloud AI: Webapps
+st.header('Cloud AI: Webapps')
+st.divider()
+
+if st.button("Show Webapps NNs Table"):
+    st.dataframe( nn_web_table )
 
 # weight scores
-w1 = st.slider("Footprint Area", 0, 5, 1, 0.05)
-w2 = st.slider("Write Intensity", 0, 5, 2, 0.05)
-w3 = st.slider("Read Intensity", 0, 5, 0.1, 0.05)
-w4 = st.slider("Latency", 0, 5, 1, 0.05)
-w5 = st.slider("Volatility", 0, 5, 0.1, 0.05)
-w6 = st.slider("Static Power", 0, 5, 0.05, 0.05)
-w7 = st.slider("Compute-in-Memory", 0, 5, 0.25, 0.05)
-w8 = st.slider("CMOS compatibility", 0, 5, 4, 0.05)
-w9 = st.slider("Cost score", 0, 5, 5, 0.05)
-
+w1 = st.slider("WebApps: Footprint Area", 0., 5., 1., 0.05)
+w2 = st.slider("WebApps: Write Intensity", 0., 5., 2., 0.05)
+w3 = st.slider("WebApps: Read Intensity", 0., 5., 0.1, 0.05)
+w4 = st.slider("WebApps: Latency", 0., 5., 1., 0.05)
+w5 = st.slider("WebApps: Volatility", 0., 5., 0.1, 0.05)
+w6 = st.slider("WebApps: Static Power", 0., 5., 0.05, 0.05)
+w7 = st.slider("WebApps: Compute-in-Memory", 0., 5., 0.25, 0.05)
+w8 = st.slider("WebApps: CMOS compatibility", 0., 5., 4., 0.05)
+w9 = st.slider("WebApps: Cost score", 0., 5., 5., 0.05)
 weights_web = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_web = normalize_weights( weights_web )
 # visualize weights
@@ -309,8 +305,9 @@ norm_const_web = [area_norm, latency_norm, energy_norm, cmos_norm, cost_norm, wr
 vision_fitness = compute_fitness_scores( memory_table, nn_web_table, 
                                         norm_const_web, weights_web, verbose=False )
 
-plot_fitness_table( vision_fitness, memory_table, nn_web_table, 
+fig_web = plot_fitness_table( vision_fitness, memory_table, nn_web_table, 
                     xlabel_size=12, ylabel_size=12, cmap='Purples',
                     vminmax = [20, 80],
                     quantile_col= 64,
-                    filename = 'Table_Fitness_Could_Web', no_ylabel=True )
+                    filename = 'Table_Fitness_Could_Web', no_ylabel=False )
+st.pyplot(fig_web)
