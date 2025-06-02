@@ -14,7 +14,7 @@ st.write(
     '''
     This app supports a poster presented by F. Moro, S. Liu, S. Billaudelle, A. Liu and M. Payvand at the ISMC conference. Find details about the conference here: https://newevent.bg/en/
 
-    The title of the poster is "What AI demands from Memory Technology" and the work proposes to analyze Memory Technology and Neural Networks in different applications to find the best fit between all the combinations. 
+    The title of the poster is "Matching Memory Technology to AI workloads" and the work proposes to analyze Memory Technology and Neural Networks in different applications to find the best fit between all the combinations. 
 
     First, we analyze the landscape of Memory Technology by evaluating different memory types on a set of metrics. These metrics include Density, Leakage Power, Write and Read latency, Write and Read energy and Endurance.
 
@@ -25,7 +25,7 @@ st.write(
     
     ------------
     The Fitness score is composed of 9 sub-scores:
-    1. **Footprint Area Memory Score**: Smaller memory footprint (bytes/mm²) → higher score
+    1. **Footprint Area Memory Score (FAM)**: Smaller memory footprint (bytes/mm²) → higher score    
     2. **Write Intensity**
     3. **Read Intensity**
     4. **Latency Score**: Based on required vs actual throughput
@@ -47,7 +47,7 @@ st.write(
     8. w8: cmos node
     9. w9: cost score
 
-    --> the Fitness Score is normalized in [0-100], where 100 represent a *perfect fit* between Memory Technology and Neural Network architecture and application requirements.
+    > the Fitness Score is normalized in [0-100], where 100 represent a *perfect fit* between Memory Technology and Neural Network architecture and application requirements.
 
     We evaluate the Fitness score for common Neural Network archiectures in two macro-domains in AI: Edge and Cloud-based applications.
     The Edge AI domain is futher subdivided into Vision, Speech and Biomedical application domains.
