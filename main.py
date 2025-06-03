@@ -101,15 +101,15 @@ if st.button("Show Vision NNs Table"):
 st.write("Let's compute the Fitness Score for our Memory Technology types and several popular Neural Networks in the Edge AI domain. First, we have to set the *weights* for the Fitness Score:")
 
 # weight scores
-w1 = st.slider("Footprint Area", 0., 1.5, 1., 0.05)
-w2 = st.slider("Write Intensity", 0., 1.5, 0.75, 0.05)
-w3 = st.slider("Read Intensity", 0., 1.5, 1., 0.05)
-w4 = st.slider("Latency", 0., 1.5, 1., 0.05)
-w5 = st.slider("Volatility", 0., 1.5, 0.5, 0.05)
-w6 = st.slider("Static Power", 0., 1.5, 1.25, 0.05)
-w7 = st.slider("Compute-in-Memory", 0., 1.5, 0.5, 0.05)
-w8 = st.slider("CMOS compatibility", 0., 1.5, 0.5, 0.05)
-w9 = st.slider("Cost score", 0., 1.5, 0.5, 0.05)
+w1 = st.slider("Footprint Area", 0, 100, 14, 1)
+w2 = st.slider("Write Intensity", 0, 100, 11, 1)
+w3 = st.slider("Read Intensity", 0, 100, 14, 1)
+w4 = st.slider("Latency", 0, 100, 14, 1)
+w5 = st.slider("Volatility", 0, 100, 7, 1)
+w6 = st.slider("Static Power", 0, 100, 18, 1)
+w7 = st.slider("Compute-in-Memory", 0, 100, 7, 1)
+w8 = st.slider("CMOS compatibility", 0, 100, 7, 1)
+w9 = st.slider("Cost score", 0, 100, 7, 1)
 
 weights_vision = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_vision = normalize_weights( weights_vision )
@@ -148,15 +148,15 @@ if st.button("Show Speech NNs Table"):
 
 # weight scores
 weights_speech = [1]*9
-weights_speech[0] = st.slider("Speech: Footprint Area", 0., 1.5, 1., 0.05)
-weights_speech[1] = st.slider("Speech: Write Intensity", 0., 1.5, 0.75, 0.05)
-weights_speech[2] = st.slider("Speech: Read Intensity", 0., 1.5, 1., 0.05)
-weights_speech[3] = st.slider("Speech: Latency", 0., 1.5, 1., 0.05)
-weights_speech[4] = st.slider("Speech: Volatility", 0., 1.5, 0.5, 0.05)
-weights_speech[5] = st.slider("Speech: Static Power", 0., 1.5, 1.5, 0.05)
-weights_speech[6] = st.slider("Speech: Compute-in-Memory", 0., 1.5, 0.5, 0.05)
-weights_speech[7] = st.slider("Speech: CMOS compatibility", 0., 1.5, 0.5, 0.05)
-weights_speech[8] = st.slider("Speech: Cost score", 0., 1.5, 0.5, 0.05)
+weights_speech[0] = st.slider("Speech: Footprint Area", 0, 100, 14, 1)
+weights_speech[1] = st.slider("Speech: Write Intensity", 0, 100, 11, 1)
+weights_speech[2] = st.slider("Speech: Read Intensity", 0, 100, 14, 1)
+weights_speech[3] = st.slider("Speech: Latency", 0, 100, 14, 1)
+weights_speech[4] = st.slider("Speech: Volatility", 0, 100, 7, 1)
+weights_speech[5] = st.slider("Speech: Static Power", 0, 100, 18, 1)
+weights_speech[6] = st.slider("Speech: Compute-in-Memory", 0, 100, 7, 1)
+weights_speech[7] = st.slider("Speech: CMOS compatibility", 0, 100, 7, 1)
+weights_speech[8] = st.slider("Speech: Cost score", 0, 100, 7, 1)
 
 # weights_speech = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_speech = normalize_weights( weights_speech )
@@ -193,15 +193,15 @@ if st.button("Show Biomedical NNs Table"):
     st.dataframe( nn_biomed_table )
 
 # weight scores
-w1 = st.slider("Biomed: Footprint Area", 0., 1.5, 1., 0.05)
-w2 = st.slider("Biomed: Write Intensity", 0., 1.5, 0.75, 0.05)
-w3 = st.slider("Biomed: Read Intensity", 0., 1.5, 1., 0.05)
-w4 = st.slider("Biomed: Latency", 0., 1.5, 1., 0.05)
-w5 = st.slider("Biomed: Volatility", 0., 1.5, 0.5, 0.05)
-w6 = st.slider("Biomed: Static Power", 0., 1.5, 1.5, 0.05)
-w7 = st.slider("Biomed: Compute-in-Memory", 0., 1.5, 0.5, 0.05)
-w8 = st.slider("Biomed: CMOS compatibility", 0., 1.5, 0.5, 0.05)
-w9 = st.slider("Biomed: Cost score", 0., 1.5, 0.5, 0.05)
+w1 = st.slider("Biomed: Footprint Area", 0, 100, 14, 1)
+w2 = st.slider("Biomed: Write Intensity", 0, 100, 11, 1)
+w3 = st.slider("Biomed: Read Intensity", 0, 100, 14, 1)
+w4 = st.slider("Biomed: Latency", 0, 100, 14, 1)
+w5 = st.slider("Biomed: Volatility", 0, 100, 7, 1)
+w6 = st.slider("Biomed: Static Power", 0, 100, 18, 1)
+w7 = st.slider("Biomed: Compute-in-Memory", 0, 100, 7, 1)
+w8 = st.slider("Biomed: CMOS compatibility", 0, 100, 7, 1)
+w9 = st.slider("Biomed: Cost score", 0, 100, 7, 1)
 
 weights_biomed = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_biomed = normalize_weights( weights_biomed )
@@ -239,15 +239,15 @@ if st.button("Show LLM NNs Table"):
     st.dataframe( nn_llm_table )
 
 # weight scores
-w1 = st.slider("LLM: Footprint Area", 0., 5., 1., 0.05)
-w2 = st.slider("LLM: Write Intensity", 0., 5., 2., 0.05)
-w3 = st.slider("LLM: Read Intensity", 0., 5., 0.1, 0.05)
-w4 = st.slider("LLM: Latency", 0., 5., 1., 0.05)
-w5 = st.slider("LLM: Volatility", 0., 5., 0.1, 0.05)
-w6 = st.slider("LLM: Static Power", 0., 5., 0.0, 0.05)
-w7 = st.slider("LLM: Compute-in-Memory", 0., 5., 0.5, 0.05)
-w8 = st.slider("LLM: CMOS compatibility", 0., 5., 4., 0.05)
-w9 = st.slider("LLM: Cost score", 0., 5., 5., 0.05)
+w1 = st.slider("LLM: Footprint Area", 0, 100, 7, 1)
+w2 = st.slider("LLM: Write Intensity", 0, 100, 14, 1)
+w3 = st.slider("LLM: Read Intensity", 0, 100, 7, 1)
+w4 = st.slider("LLM: Latency", 0, 100, 7, 1)
+w5 = st.slider("LLM: Volatility", 0, 100, 1, 1)
+w6 = st.slider("LLM: Static Power", 0, 100, 0, 1)
+w7 = st.slider("LLM: Compute-in-Memory", 0, 100, 2, 1)
+w8 = st.slider("LLM: CMOS compatibility", 0, 100, 28, 1)
+w9 = st.slider("LLM: Cost score", 0, 100, 35, 1)
 weights_llm = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_llm = normalize_weights( weights_llm )
 
@@ -279,15 +279,15 @@ if st.button("Show Webapps NNs Table"):
     st.dataframe( nn_web_table )
 
 # weight scores
-w1 = st.slider("WebApps: Footprint Area", 0., 5., 1., 0.05)
-w2 = st.slider("WebApps: Write Intensity", 0., 5., 2., 0.05)
-w3 = st.slider("WebApps: Read Intensity", 0., 5., 0.1, 0.05)
-w4 = st.slider("WebApps: Latency", 0., 5., 1., 0.05)
-w5 = st.slider("WebApps: Volatility", 0., 5., 0.1, 0.05)
-w6 = st.slider("WebApps: Static Power", 0., 5., 0.05, 0.05)
-w7 = st.slider("WebApps: Compute-in-Memory", 0., 5., 0.25, 0.05)
-w8 = st.slider("WebApps: CMOS compatibility", 0., 5., 4., 0.05)
-w9 = st.slider("WebApps: Cost score", 0., 5., 5., 0.05)
+w1 = st.slider("WebApps: Footprint Area", 0, 100, 7, 1)
+w2 = st.slider("WebApps: Write Intensity", 0, 100, 14, 1)
+w3 = st.slider("WebApps: Read Intensity", 0, 100, 7, 1)
+w4 = st.slider("WebApps: Latency", 0, 100, 7, 1)
+w5 = st.slider("WebApps: Volatility", 0, 100, 1, 1)
+w6 = st.slider("WebApps: Static Power", 0, 100, 0, 1)
+w7 = st.slider("WebApps: Compute-in-Memory", 0, 100, 2, 1)
+w8 = st.slider("WebApps: CMOS compatibility", 0, 100, 28, 1)
+w9 = st.slider("WebApps: Cost score", 0, 100, 35, 1)
 weights_web = [w1,w2,w3,w4,w5,w6,w7,w8,w9]
 weights_web = normalize_weights( weights_web )
 # visualize weights
