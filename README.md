@@ -1,8 +1,14 @@
-# 🎈 Blank app template
+# Matching Memory Technology to AI workloads
+---
 
-A simple Streamlit app template for you to modify!
+This is a simple applications that runs at the following link: https://memorytech-ai-fm.streamlit.app/
+> Click to interact!
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
+The app supports a poster presented at ISMC 2025, aimed at quantifying the match or characteristics between different memory technolgy and AI workloads.
+Memory technology is evaluated with a set of metrics, and so are several neural networks that are commonly employed in AI applications.
+These two sets of metrics is combined in a 'Fitness Score' which determines how well a given memory technology matches an AI workload. 
+
+The app is built with [Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://blank-app-template.streamlit.app/)
 
 ### How to run it on your own machine
 
@@ -15,5 +21,5 @@ A simple Streamlit app template for you to modify!
 2. Run the app
 
    ```
-   $ streamlit run streamlit_app.py
+   $ streamlit run main.py
    ```
